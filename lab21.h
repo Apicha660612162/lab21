@@ -8,37 +8,61 @@
 using namespace std;
 
 class Equipment{
-	int hpmax;
-	int atk;
-	int def;
-	public:
-		Equipment(int,int,int);
-		vector<int> getStat();			
+    int hpmax;
+    int atk;
+    int def;
+public:
+    Equipment(int h, int a, int d) : hpmax(h), atk(a), def(d) {}
+    vector<int> getStat() {
+        return {hpmax, atk, def};
+    }            
 };
 
 class Unit{
-		string name;
-		string type;		
-		int hp;
-		int hpmax;
-		int atk;
-		int def;
-		bool guard_on;
-		bool dodge_on; 
-		Equipment *equipment; 
-	public:			
-		Unit(string,string); 
-		void showStatus();
-		void newTurn();
-		int attack(Unit &);
-		int ultimateAttack(Unit &); 
-		int beAttacked(int);
-		int heal();	
-		void guard();
-		void dodge(); 
-		bool isDead();
-		void equip(Equipment *);  
+    string name;
+    string type;        
+    int hp;
+    int hpmax;
+    int atk;
+    int def;
+    bool guard_on;
+    bool dodge_on; 
+    Equipment *equipment; 
+public:         
+    Unit(string,string); 
+    void showStatus();
+    void newTurn();
+    int attack(Unit &);
+    int ultimateAttack(Unit &); 
+    int beAttacked(int);
+    int heal();    
+    void guard();
+    void dodge(); 
+    bool isDead();
+    void equip(Equipment *);  
 };
+
+void Unit::equip(Equipment *newEquipment) {
+    // ถอดอาวุธเก่า (ถ้ามี)
+    if (equipment != nullptr) {
+        vector<int> oldStats = equipment->getStat();
+        hpmax -= oldStats[0];
+        atk -= oldStats[1];
+        def -= oldStats[2];
+    }
+
+    // สวมใส่อาวุธใหม่
+    equipment = newEquipment;
+    vector<int> newStats = newEquipment->getStat();
+    hpmax += newStats[0];
+    atk += newStats[1];
+    def += newStats[2];
+
+    // ปรับแต่งค่า hp หากมีการเปลี่ยนแปลง hpmax
+    if (hp > hpmax) {
+        hp = hpmax;
+    }
+}
 
 Unit::Unit(string t,string n){ 
 	type = t;
@@ -167,4 +191,3 @@ void playerLose(){
 	cout << "*                                                     *\n";
 	cout << "*******************************************************\n";
 };
-
